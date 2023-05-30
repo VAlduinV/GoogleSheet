@@ -57,20 +57,30 @@ class GoogleSheet:
 
 
 if __name__ == "__main__":
+    print(
+        """
+     ______   ______   ______   ______   __       ______   ______   __  __   ______   ______  ______  ______    
+    /\  ___\ /\  __ \ /\  __ \ /\  ___\ /\ \     /\  ___\ /\  ___\ /\ \_\ \ /\  ___\ /\  ___\/\__  _\/\  ___\   
+    \ \ \__ \\ \ \/\ \\ \ \/\ \\ \ \__ \\ \ \____\ \  __\ \ \___  \\ \  __ \\ \  __\ \ \  __\\/_/\ \/\ \___  \  
+     \ \_____\\ \_____\\ \_____\\ \_____\\ \_____\\ \_____\\/\_____\\ \_\ \_\\ \_____\\ \_____\ \ \_\ \/\_____\ 
+      \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_/\/_/ \/_____/ \/_____/  \/_/  \/_____/ 
+                                                                                                                                                                                                           
+        """
+    )
     logging.basicConfig(level=logging.INFO)
 
     credentials_file = "service_account.json"
     spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
-
     google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
-    # Пример чтения диапазона значений
-    values = google_sheet.read_range("H1", "H76")
-    for i, l in enumerate(values):
-        for v in l:
-            print(f"Index: {i} -> {v}")
+
     # Пример поиска телеграм-каналов в диапазоне значений
     telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
     for count, row in enumerate(telegram_channels):
         print(f"Count: {count} -> {row}")
 
+    # Пример чтения диапазона значений
+    values = google_sheet.read_range("H1", "H76")
+    for i, l in enumerate(values):
+        for v in l:
+            print(f"Index: {i} -> {v}")
 
