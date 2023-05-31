@@ -16,11 +16,18 @@ class GoogleSheet:
             self.credentials_file, self.scope
         )
         self.client = gspread.authorize(self.credentials)
-        self.sheet = self.client.open_by_key(self.spreadsheet_id).sheet1
+        self.spreadsheet = self.client.open_by_key(self.spreadsheet_id)
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(logging.StreamHandler())
+
+    def select_sheet(self, sheet_name):
+        self.sheet = self.spreadsheet.worksheet(sheet_name)
+
+    def share(self, email, perm_type, role):
+        self.spreadsheet.share(email, perm_type, role)
+        self.logger.info(f"Shared with {email}")
 
     def read_cell(self, cell):
         self.logger.info(f"Reading cell {cell}")
@@ -41,6 +48,10 @@ class GoogleSheet:
     def append_row(self, values):
         self.logger.info(f"Appending row {values}")
         self.sheet.append_row(values)
+
+    def delete_rows(self, start, end):
+        self.logger.info(f"Deleting rows {start} to {end}")
+        self.sheet.delete_rows(start, end)
 
     def find_telegram_channels(self, start_cell, end_cell):
         self.logger.info("Finding Telegram channels")
@@ -64,7 +75,7 @@ if __name__ == "__main__":
     \ \ \__ \\ \ \/\ \\ \ \/\ \\ \ \__ \\ \ \____\ \  __\ \ \___  \\ \  __ \\ \  __\ \ \  __\\/_/\ \/\ \___  \  
      \ \_____\\ \_____\\ \_____\\ \_____\\ \_____\\ \_____\\/\_____\\ \_\ \_\\ \_____\\ \_____\ \ \_\ \/\_____\ 
       \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_____/ \/_/\/_/ \/_____/ \/_____/  \/_/  \/_____/ 
-                                                                                                                                                                                                           
+
         """
     )
     logging.basicConfig(level=logging.INFO)
@@ -73,14 +84,22 @@ if __name__ == "__main__":
     spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
     google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
 
-    # Пример поиска телеграм-каналов в диапазоне значений
+    # Select a specific sheet
+    google_sheet.select_sheet('Sheet1')
+
+    # Share the spreadsheet with someone
+    google_sheet.share('someone@example.com', 'user', 'writer')
+
+    # Example of deleting rows
+    google_sheet.delete_rows(1, 3)
+
+    # Example of searching Telegram channels in a range of values
     telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
     for count, row in enumerate(telegram_channels):
         print(f"Count: {count} -> {row}")
 
-    # Пример чтения диапазона значений
+    # Example of reading a range of values
     values = google_sheet.read_range("H1", "H76")
     for i, l in enumerate(values):
         for v in l:
             print(f"Index: {i} -> {v}")
-
