@@ -75,8 +75,8 @@ def write_to_file(filename: str, data):
 
 
 def main(args):
-    credentials_file = "service_account.json"
-    spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
+    credentials_file = ""
+    spreadsheet_id = ""
 
     google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
 
