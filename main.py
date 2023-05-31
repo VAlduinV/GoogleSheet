@@ -2,6 +2,7 @@ import logging
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import re
+import sys
 
 
 class GoogleSheet:
@@ -37,7 +38,7 @@ class GoogleSheet:
         self.logger.info(f"Writing {value} to cell {cell}")
         self.sheet.update_acell(cell, value)
 
-    def read_range(self, start_cell, end_cell):
+    def read_range(self, start_cell: str, end_cell: str):
         self.logger.info(f"Reading range {start_cell}:{end_cell}")
         return self.sheet.get(start_cell + ":" + end_cell)
 
@@ -67,6 +68,38 @@ class GoogleSheet:
         return telegram_channels
 
 
+def write_to_file(filename: str, data):
+    with open(filename, 'w') as f:
+        for item in data:
+            f.write(f"{item}\n")
+
+
+def main(args):
+    credentials_file = "service_account.json"
+    spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
+
+    google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
+
+    # Select a specific sheet
+    google_sheet.select_sheet(args[0])
+
+    # Share the spreadsheet with someone
+    google_sheet.share(args[1], 'user', 'writer')
+
+    # Example of searching Telegram channels in a range of values
+    telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
+    for count, row in enumerate(telegram_channels):
+        print(f"Count: {count} -> {row}")
+
+    write_to_file('telegram_channels.txt', telegram_channels)
+
+    # Example of reading a range of values
+    values = google_sheet.read_range("H1", "H76")
+    for i, l in enumerate(values):
+        for v in l:
+            print(f"Index: {i} -> {v}")
+
+
 if __name__ == "__main__":
     print(
         """
@@ -79,26 +112,4 @@ if __name__ == "__main__":
         """
     )
     logging.basicConfig(level=logging.INFO)
-
-    credentials_file = "service_account.json"
-    spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
-
-    google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
-    # Select a specific sheet
-    google_sheet.select_sheet('Аркуш1')
-    # Share the spreadsheet with someone
-    google_sheet.share('prime72w@gmail.com', 'user', 'writer')
-    #
-    # # Example of deleting rows
-    # google_sheet.delete_rows(1, 3)
-
-    # Example of searching Telegram channels in a range of values
-    telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
-    for count, row in enumerate(telegram_channels):
-        print(f"Count: {count} -> {row}")
-
-    # Example of reading a range of values
-    values = google_sheet.read_range("H1", "H76")
-    for i, l in enumerate(values):
-        for v in l:
-            print(f"Index: {i} -> {v}")
+    main(sys.argv[1:])
