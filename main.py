@@ -23,10 +23,10 @@ class GoogleSheet:
         self.logger.setLevel(logging.INFO)
         self.logger.addHandler(logging.StreamHandler())
 
-    def select_sheet(self, sheet_name):
+    def select_sheet(self, sheet_name: str):
         self.sheet = self.spreadsheet.worksheet(sheet_name.strip())
 
-    def share(self, email, perm_type, role):
+    def share(self, email: str, perm_type: str, role: str):
         self.spreadsheet.share(email, perm_type, role)
         self.logger.info(f"Shared with {email}")
 
@@ -87,17 +87,21 @@ def main(args):
     google_sheet.share(args[1], 'user', 'writer')
 
     # Example of searching Telegram channels in a range of values
-    telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
+    # Example of searching Telegram channels in a range of values
+    telegram_channels = google_sheet.find_telegram_channels(args[2], args[3])
+    google_sheet.logger.info(f"Found {len(telegram_channels)} Telegram channels.")
+
     for count, row in enumerate(telegram_channels):
-        print(f"Count: {count} -> {row}")
+        google_sheet.logger.info(f"Count: {count} -> {row}")
 
     write_to_file('telegram_channels.txt', telegram_channels)
+    google_sheet.logger.info("Written Telegram channels to 'telegram_channels.txt'.")
 
     # Example of reading a range of values
-    values = google_sheet.read_range("H1", "H76")
-    for i, l in enumerate(values):
-        for v in l:
-            print(f"Index: {i} -> {v}")
+    # values = google_sheet.read_range("H1", "H76")
+    # for i, l in enumerate(values):
+    #     for v in l:
+    #         print(f"Index: {i} -> {v}")
 
 
 if __name__ == "__main__":
