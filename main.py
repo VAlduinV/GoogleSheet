@@ -23,7 +23,7 @@ class GoogleSheet:
         self.logger.addHandler(logging.StreamHandler())
 
     def select_sheet(self, sheet_name):
-        self.sheet = self.spreadsheet.worksheet(sheet_name)
+        self.sheet = self.spreadsheet.worksheet(sheet_name.strip())
 
     def share(self, email, perm_type, role):
         self.spreadsheet.share(email, perm_type, role)
@@ -82,16 +82,15 @@ if __name__ == "__main__":
 
     credentials_file = "service_account.json"
     spreadsheet_id = "1x76WBpDiAJj1XrLLoE3Lq6fZbGvC5marEeDScVnZB_0"
+
     google_sheet = GoogleSheet(credentials_file, spreadsheet_id)
-
     # Select a specific sheet
-    google_sheet.select_sheet('Sheet1')
-
+    google_sheet.select_sheet('Аркуш1')
     # Share the spreadsheet with someone
-    google_sheet.share('someone@example.com', 'user', 'writer')
-
-    # Example of deleting rows
-    google_sheet.delete_rows(1, 3)
+    google_sheet.share('prime72w@gmail.com', 'user', 'writer')
+    #
+    # # Example of deleting rows
+    # google_sheet.delete_rows(1, 3)
 
     # Example of searching Telegram channels in a range of values
     telegram_channels = google_sheet.find_telegram_channels("G1", "G76")
