@@ -84,11 +84,10 @@ def main(args):
     google_sheet.select_sheet(args[0])
 
     # Share the spreadsheet with someone
-    google_sheet.share(args[1], 'user', 'writer')
+    # google_sheet.share(args[1], 'user', 'writer')
 
     # Example of searching Telegram channels in a range of values
-    # Example of searching Telegram channels in a range of values
-    telegram_channels = google_sheet.find_telegram_channels(args[2], args[3])
+    telegram_channels = google_sheet.find_telegram_channels(args[1], args[2])
     google_sheet.logger.info(f"Found {len(telegram_channels)} Telegram channels.")
 
     for count, row in enumerate(telegram_channels):
